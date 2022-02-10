@@ -1,0 +1,148 @@
+---
+title: "Paser v Robotics Analysis"
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document: default
+---
+
+```{r}
+library(plyr)
+library(ggplot2)
+library(tidyverse)
+library(readr)
+library(dplyr)
+library(readxl)
+library(writexl)
+library(uuid)
+library(data.table)   
+library(stringr)
+library(lubridate)
+library(knitr)
+library(rmarkdown)
+```
+```{r}
+South_Bend_2020_Assessment <- read_excel("~/Downloads/South Bend 2020 Assessment.xlsx")
+robotics<- data.frame(South_Bend_2020_Assessment)
+PASER_Archive_excel <- read_excel("~/Downloads/PASER_Archive_excel.xlsx")
+paser<-data.frame(PASER_Archive_excel)
+
+```
+
+```{r}
+paser<- paser %>% filter(inspectionyear==2020)
+```
+
+```{r}
+robotics %>%
+   group_by(Level>1) %>% 
+    summarise(count = n()) %>%
+  arrange(desc(count)) 
+
+
+
+```
+
+```{r}
+robotics1<- robotics %>% group_by(Level)  %>% mutate(count = n()) 
+```
+
+
+
+
+
+```{r}
+library(scales)
+library(ggthemes)
+```
+
+
+```{r}
+paser %>% 
+   group_by(paserrating) %>% 
+    summarise(count = n()) %>%
+  arrange(desc(count))
+```
+
+```{r}
+twenty<- paser %>% filter(inspectionyear=="2020")
+
+twenty %>% 
+   group_by(paserrating) %>% 
+    summarise(count = n()) %>%
+  arrange(desc(count))
+```
+
+```{r}
+
+brick<- paser %>% filter(pvmtmatrl=="Brick")
+Asphalt<- paser %>% filter(pvmtmatrl=="Asphalt" | pvmtmatrl=="Concrete")
+
+paser %>% 
+   group_by(pvmtmatrl) %>% 
+    summarise(count = n()) %>%
+  arrange(desc(count))
+```
+
+```{r}
+str(brick)
+```
+
+```{r}
+brick<- brick %>% filter(paserrating<=4 & paserrating>0)
+```
+
+```{r}
+brick %>% 
+   group_by(paserrating) %>% 
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+ggplot(brick, aes(y=paserrating)) + geom_bar(aes(fill=pvmtmatrl))
+```
+```{r}
+Asphalt<- Asphalt %>% filter(paserrating<=10 & paserrating>0)
+```
+
+```{r}
+new<-rbind(Asphalt,brick)
+```
+
+```{r}
+new %>% 
+   group_by(paserrating) %>% 
+    summarise(count = n()) %>%
+  arrange(desc(count))
+
+ggplot(new, aes(paserrating)) + geom_bar(aes(fill=pvmtmatrl)) + 
+           xlab("Paser Rating") + 
+           ylab("Total Count")+ scale_fill_discrete(name = "Pavement Material")
+```
+
+```{r}
+#sum robotics
+sum(robotics$Length)
+sum(paser$st_length.shape.)
+```
+
+```{r}
+robotics %>% 
+   group_by(Level) %>% 
+    summarise(count = n()) %>%
+  arrange(desc(count))
+```
+
+```{r}
+new %>% 
+   group_by(paserrating) %>% 
+    summarise(count = n()) %>%
+  arrange(desc(count))
+
+```
+
+
+```{r}
+ggplot(robotics, aes(Level)) + geom_bar() 
+```
+
+
